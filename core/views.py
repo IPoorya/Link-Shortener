@@ -8,8 +8,7 @@ import string
 from django.shortcuts import redirect
 from datetime import datetime, timedelta
 from django.db.models import Q
-from django.db.models import Count
-from django.http import HttpResponse
+
 
 def generate_random_string(len):
     all_characters = list(string.ascii_lowercase) + list(string.ascii_uppercase) + list(string.digits)
@@ -114,7 +113,6 @@ class setPassword(View):
         password = request.POST.get('password')
         print('password: ', password)
         obj = Link.objects.get(base_url=base_url, short_url=short_url)
-        print(obj)
         form = getPassword(request.POST, instance=obj)
         if not form.is_valid():
             return render(request, 'setpassword.html', {
@@ -138,7 +136,6 @@ class shortUrl(View):
     def get(self, request):
         short_url = str(request.path)
         obj = Link.objects.filter(short_url=short_url)
-        print(obj)
         if len(obj) == 1:
             obj = obj[0]
             if obj.password and len(obj.password) > 0:
