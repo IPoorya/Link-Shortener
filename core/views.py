@@ -6,6 +6,10 @@ import random
 from django.utils.text import slugify
 import string
 from django.shortcuts import redirect
+from datetime import datetime, timedelta
+from django.db.models import Q
+from django.db.models import Count
+from django.http import HttpResponse
 
 def generate_random_string(len):
     all_characters = list(string.ascii_lowercase) + list(string.ascii_uppercase) + list(string.digits)
@@ -176,4 +180,52 @@ class shortUrl(View):
         return render(request, 'getpassword.html', {
             'form' : form,
             'message' : 'wrong password bro!',
+        })
+
+
+class stats(View):
+    def get(self, request):
+        form = urlUsage()
+        return render(request, 'stats.html', {
+            'form' : form,
+            'title' : 'Stats',
+            'method' : request.method,
+        })
+
+    def post(self, request):
+        form = urlUsage(request.POST)
+        if not form.is_valid():
+            return render(request, 'stats.html', {
+            'form' : form,
+            'title' : 'Stats',
+            'method' : request.method,
+            'message' : 'invalid data!',
+            }) 
+        
+        obj = Link.objects.get(short_url=form.cleaned_data['url'][form.cleaned_data['url'].rfind("/"):])
+        data = []
+        tempLable = [(datetime.now().date() - timedelta(days=30)).strftime('%m/%d')]
+        label = []
+        for i in range(30, 2, -3):
+            start = datetime.now().date() - timedelta(days=i)
+            end = datetime.now().date() - timedelta(days=i - 3)
+            condition = Q(url=obj) & Q(usage_date__gte=start) & Q(usage_date__lte=end)
+            data.append(len(usageChart.objects.filter(condition)))
+            tempLable.append(end.strftime('%m/%d'))
+
+        for i in range(len(tempLable)):
+            if i != 10:
+                label.append(tempLable[i] + '-' + tempLable[i + 1])
+
+        total_usage = obj.usage_count
+        last_usage = obj.last_usage
+        return render(request, 'stats.html', {
+            'title' : 'Stats',
+            'form' : form,
+            'chartData' : {
+                'label': label,
+                'data': data,
+            },
+            'total_usage' : total_usage,
+            'last_usage' : last_usage,
         })

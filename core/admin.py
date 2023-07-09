@@ -7,5 +7,5 @@ class LinkAdmin(admin.ModelAdmin):
     
 @admin.register(usageChart)
 class usageChartAdmin(admin.ModelAdmin):
-    list_display = ['url', 'usage_time']
+    list_display = ['url', 'usage_date', 'usage_time']
     readonly_fields = ['url']

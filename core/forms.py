@@ -1,5 +1,5 @@
 from django import forms
-from .models import Link
+from .models import *
 
 
 class getURL(forms.ModelForm):
@@ -25,5 +25,9 @@ class getPassword(forms.ModelForm):
 
 class checkPassword(forms.Form):
     password = forms.CharField(max_length=31)
+
+
+class urlUsage(forms.Form):
+    url = forms.CharField(label='URL:')
 
 

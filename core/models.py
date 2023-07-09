@@ -13,7 +13,8 @@ class Link(models.Model):
 
 class usageChart(models.Model):
     url = models.ForeignKey(Link, on_delete=models.CASCADE, unique=False)
-    usage_time = models.DateTimeField(auto_now_add=True)
+    usage_date = models.DateField(auto_now_add=True)
+    usage_time = models.TimeField(auto_now_add=True)
 
     def __str__(self):
         return self.url.base_url + ':' + self.url.short_url

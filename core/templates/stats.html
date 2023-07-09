@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+<style>
+    main{
+        flex-direction: column;
+        justify-content: flex-start;
+        /* align-items: flex-start; */
+    }
+    #myChart{
+        max-width: 850px;
+        max-height: 400px;
+        /* border: 1px solid #000; */
+        background-color: rgb(175, 213, 165);
+    }
+    .pickUrl{
+        width: 100%;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* border: 0px solid #000; */
+        /* display: block; */
+        text-align: center;
+    }
+    .data{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        /* border: 1px solid #000; */
+    }
+    .left, .right{
+        width: 100%;
+        height: 100%;
+        /* border: 1px solid #000; */
+    }
+    .left{
+        display: flex;
+        align-items: center;
+        margin-top: -20px;
+        margin-left: 40px;
+    }
+    .right{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
+    }
+    .card{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 300px;
+        height: 400px;
+        border: 1px solid #000;
+        margin-top: -20px;
+        border-radius: 14px;
+        background-image: url('{% static "images/image4.jpg" %}');
+        background-size: cover;
+        color: white;
+
+    }
+    .card:hover{
+        box-shadow: 0px 0px 15px rgba(207, 255, 195, 0.3);
+        transition: 0.5s;
+        scale: 1.1;
+    }
+    form{
+        display: flex;
+    }
+    canvas{
+        border-radius: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="pickUrl">
+    <form method="post" id="myForm">
+        {% csrf_token %}
+        {{form.as_div}}
+        <input type="submit" value="Get Stats">  
+    </form>
+    {{ message }}
+</div>
+
+{% if request.method == 'POST' %}
+<div class="data">
+    <div class="left">
+        <canvas id="myChart"></canvas>
+    </div>
+    <div class="right">
+        <div class="card">
+            <h1>Total Usage:</h1>
+            <h2>{{ total_usage }}</h2>
+            <h1>Last Usage:</h1>
+            <h4>{{ last_usage }}</h4>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let chartLabel = {{ chartData.label|safe }}
+    let chartData = {{ chartData.data|safe }}
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartLabel,
+            datasets: [{
+                label: 'Count',
+                data: chartData,
+                backgroundColor: 'rgba(0, 123, 255, 0.5)', // Customize the colors
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1 // Set the desired step size here
+                }
+            }
+                
+            }
+        }
+    });
+</script>
+{% endblock %}
