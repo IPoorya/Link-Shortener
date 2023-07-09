@@ -108,7 +108,9 @@ class setPassword(View):
         base_url = request.POST.get('base_url')
         short_url = request.POST.get('short_url')[request.POST.get('short_url').rfind("/"):]
         password = request.POST.get('password')
+        print('password: ', password)
         obj = Link.objects.get(base_url=base_url, short_url=short_url)
+        print(obj)
         form = getPassword(request.POST, instance=obj)
         if not form.is_valid():
             return render(request, 'setpassword.html', {
@@ -169,6 +171,7 @@ class shortUrl(View):
             url = f'https://{obj.base_url}'
             obj.usage_count += 1
             obj.save()
+            usageChart.objects.create(url=obj)
             return redirect(url)
         return render(request, 'getpassword.html', {
             'form' : form,
