@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block style %}
+<style>
+    main{
+        justify-content: space-around;
+        align-items: center;
+    }   
+    .card:first-child{
+        margin-left: 10%;
+        background-image: url('{% static "images/image1.jpg" %}');
+        background-size: cover;
+    }
+    .card:nth-child(2){
+        background-image: url('{% static "images/image2.jpg" %}');
+        background-size: cover;
+    }
+    .card:last-child{
+        background-image: url('{% static "images/image3.jpg" %}');
+        background-size: cover;
+        margin-right: 10%;
+    }
+    .card{
+        padding: 10px 15px;
+        box-sizing: border-box;
+        width: 22%;
+        height: 400px;
+        border-radius: 14px;
+        color: white;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .card span{
+        opacity: 0;
+    }
+    .card:hover span{
+        opacity: 1;
+        transition: 0.5s;
+    }
+    .card:hover{
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+        transition: 0.5s;
+        scale: 1.1;
+    }
+    .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transition: opacity 0.5s;
+        z-index: -1;
+        border-radius: 14px;
+        }
+        .card:hover::before {
+        opacity: 1;
+        }
+</style>
+
+{% endblock %}
+
+{% block content %}
+    <main>
+        
+        <a class="card" href="{% url 'urlgenerator' %}">
+            <span>
+                <h2>. random url shotener</h2>
+                <h4>description:</h4>
+                <p>
+                    enter your url and get a randomly generated short url. yay
+                </p>
+            </span>
+        </a>
+
+        
+
+        <a class="card" href="{% url 'customurlgenerator' %}">
+            <span>
+                <h2>. custom url shotener</h2>
+                <h4>description:</h4>
+                <p>
+                    enter your url and your desired short text and get a custom short url. yayyyy
+                </p>
+            </span>
+        </a>
+        
+        <a class="card" href="#">
+            <span>
+                <h2>. your short url's stats </h2>
+                <h4>description:</h4>
+                <p>
+                    enter your shortened url to see it's stats and information...wow
+                </p>
+            </span>
+        </a>
+    </main>
+{% endblock %}

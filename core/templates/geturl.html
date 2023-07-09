@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block style %}
+<style>
+    .card{
+        width: 500px;
+        height: 350px;
+        padding: 0 10px 20px 10px;
+        box-sizing: border-box;
+        display: flex;
+        align-items:center;
+        flex-direction: column;
+        border: 1px dashed #000;
+        border-radius: 7px;
+        background-color: rgb(210, 202, 244);
+    }
+    .formData{
+        width: 90%;
+    }
+    .formData input:not([type="submit"]){
+        width: 100%;
+    }
+    label{
+        font-size: 18px;
+        font-weight: bold;
+    }
+    form{
+        margin-bottom: 20px;
+    }
+    a{
+        text-decoration: none;
+        color: #000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="card">
+        <h2>URL Generator</h2>
+        <div class="formData">
+            <form method="post">
+                {% csrf_token %}
+                {{form.as_div}}
+                <input type="submit" value="Generate"> 
+            </form>
+        
+            <div>
+                <label for="url">your short url: </label>
+                <input type="text" value="{{ short_url }}" readonly id="url">
+                <button><a id="passwordLink" href="{% url 'setpassword' %}">set password</a></button>
+                <button onclick="copyText()">Copy URL</button>
+            </div>
+
+            <span>{{ message }}</span>
+        </div>
+        
+    </div>
+    
+
+
+
+
+<script>
+    let generated = {{ generated }};
+
+
+    let passwordLink = document.getElementById('passwordLink');
+    text = '?base_url=' +  document.getElementById('id_base_url').value + '&short_url=' + document.getElementById('url').value;
+    passwordLink.setAttribute('href', '{% url 'setpassword' %}' + text);
+
+    passwordLink.addEventListener('click', function(event) {
+        if (generated===false){
+            event.preventDefault();
+        }
+    });
+
+    function copyText(e) {
+        let input = document.getElementById("url");
+        input.select();
+        input.setSelectionRange(0, 99999); // For mobile devices
+
+        document.execCommand("copy");
+
+    }
+
+    const inputFields = document.querySelectorAll('input');
+    inputFields.forEach((input) => {
+        input.setAttribute('autocomplete', 'off');
+        input.style.marginBottom = '5px';
+        });
+</script>
+{% endblock %}
+
